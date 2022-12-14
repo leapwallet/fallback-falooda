@@ -1,6 +1,6 @@
 {
   "name": "@leapwallet/fallback-falooda",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "JavaScript library that implements a blockchain node fallback system",
   "scripts": {
     "test": "jest",
@@ -14,7 +14,7 @@
     "lint:typedoc": "typedoc src/index.ts --includeVersion --readme none --treatWarningsAsErrors",
     "lint:check": "yarn lint:eslint:check && yarn lint:prettier:check && yarn lint:tsc && yarn lint:typedoc",
     "lint:fix": "yarn lint:eslint:fix && yarn lint:prettier:fix && yarn lint:tsc && yarn lint:typedoc",
-    "doc": "typedoc src/index.ts --includeVersion --readme none --treatWarningsAsErrors",
+    "doc": "typedoc src/index.ts --includeVersion --excludePrivate --readme none --treatWarningsAsErrors",
     "doc:build": "yarn doc",
     "doc:watch": "yarn doc --watch",
     "build": "tsc"
@@ -86,7 +86,9 @@
     "rules": {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-namespace": "off"
+      "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "no-constant-condition": "off"
     }
   }
 }
