@@ -41,7 +41,7 @@ Here's how it works. When you write a program that uses a blockchain node such a
   For example, this is incorrect:
 
   ```typescript
-  import Fallback from '@leapwallet/fallback-falooda/dist/fallback';
+  import Fallback from '@leapwallet/fallback-falooda/dist/browser/fallback';
   ```
 
 ## [Contributing](CONTRIBUTING.md)

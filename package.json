@@ -1,6 +1,6 @@
 {
   "name": "@leapwallet/fallback-falooda",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "JavaScript library that implements a blockchain node fallback system",
   "scripts": {
     "test": "jest",
@@ -17,17 +17,17 @@
     "doc": "typedoc src/index.ts --includeVersion --excludePrivate --readme none --treatWarningsAsErrors",
     "doc:build": "yarn doc",
     "doc:watch": "yarn doc --watch",
-    "build": "tsc"
+    "build": "tsc -p tsconfig-browser.json && tsc -p tsconfig-node.json"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/dist/"
+      "/dist*"
     ]
   },
-  "types": "dist/src/index.d.ts",
+  "types": "dist/browser/src/index.d.ts",
   "license": "UNLICENSED",
   "repository": "leapwallet/fallback-falooda",
   "keywords": [
@@ -43,9 +43,10 @@
   "bugs": "https://github.com/leapwallet/fallback-falooda/issues",
   "homepage": "https://github.com/leapwallet/fallback-falooda#readme",
   "files": [
-    "dist/src/"
+    "dist/browser/src/",
+    "dist/node/src/"
   ],
-  "browser": "dist/src/index.js",
+  "browser": "dist/browser/src/index.js",
   "dependencies": {
     "cross-fetch": "3.1.5",
     "typedi": "0.10.0"
