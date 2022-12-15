@@ -1,5 +1,5 @@
 import { Container } from 'typedi';
-import { Fallback } from '../src/fallback';
+import Fallback from '../src/fallback';
 import Pinger from '../src/pinger';
 import sleep from '../src/sleep';
 

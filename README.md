@@ -1,7 +1,6 @@
 # Fallback Falooda
 
 ![Falooda](falooda.jpg)
-_Now you can get diabetes while reading documentation too!_
 
 This is a JavaScript library that implements a blockchain node fallback system. It currently supports blockchain nodes from the [NEAR](https://near.org/) and [Cosmos](https://cosmos.network/) ecosystem.
 
@@ -36,13 +35,13 @@ Here's how it works. When you write a program that uses a blockchain node such a
   For example, this is correct:
 
   ```typescript
-  import { FallbackFalooda } from '@leapwallet/fallback-falooda';
+  import { Fallback } from '@leapwallet/fallback-falooda';
   ```
 
   For example, this is incorrect:
 
   ```typescript
-  import { FallbackFalooda } from '@leapwallet/fallback-falooda/dist/fallback-falooda';
+  import Fallback from '@leapwallet/fallback-falooda/dist/fallback';
   ```
 
 ## [Contributing](CONTRIBUTING.md)

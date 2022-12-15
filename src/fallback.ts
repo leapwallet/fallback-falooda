@@ -3,7 +3,7 @@ import { Container } from 'typedi';
 import Pinger from './pinger';
 import sleep from './sleep';
 
-export namespace Fallback {
+namespace Fallback {
   export type Config = {
     /** Each URL list must have at least one element. */
     readonly urls: DefaultUrls.Blockchains;
@@ -98,3 +98,5 @@ export namespace Fallback {
     }
   }
 }
+
+export default Fallback;

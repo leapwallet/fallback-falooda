@@ -1,5 +1,5 @@
 /** A list of free to use blockchain node URLs for different blockchains to save you time from curating your own. */
-export namespace DefaultUrls {
+namespace DefaultUrls {
   /** URLs for blockchains in the Cosmos ecosystem. */
   export namespace Cosmos {
     export const cosmosHub = [

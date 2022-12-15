@@ -6,5 +6,5 @@ import Pinger from './pinger';
 Container.set(fetchToken, fetch);
 Container.set(Pinger.token, new Pinger.DefaultApi());
 
-export * from './default-urls';
-export * from './fallback';
+export { default as DefaultUrls } from './default-urls';
+export { default as Fallback } from './fallback';
