@@ -63,7 +63,7 @@ namespace Fallback {
       const isCosmosValid =
         Object.values(config.urls.cosmos ?? {}).find(
           ({ rpcNodes, lcdNodes }) => rpcNodes.concat(lcdNodes).length === 0,
-        ) !== undefined;
+        ) === undefined;
       if (!isCosmosValid || config.urls.near?.length === 0 || config.intervalInSecs <= 0) throw new ConfigError();
     }
 
