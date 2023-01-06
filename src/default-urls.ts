@@ -88,7 +88,7 @@ namespace DefaultUrls {
       'https://stargaze-rapipc.polkachu.com/',
       'https://api.stars.kingnodes.com/',
     ];
-    export const sifchain = [
+    export const sifChain = [
       'https://sifchain-api.polkachu.com/',
       'https://rest-sifchain.ecostake.com/',
       'https://api-sifchain-ia.cosmosia.notional.ventures/',
@@ -273,50 +273,55 @@ namespace DefaultUrls {
     'https://near-mainnet-rpc.allthatnode.com:3030',
   ];
 
+  export type RpcNodesAndLcdNodes = {
+    readonly rpcNodes: Nodes;
+    readonly lcdNodes: Nodes;
+  };
+
   /** A list of blockchain node URLs for a particular blockchain. */
   export type Nodes = string[];
 
   export type Blockchains = {
     /** Every key is the name of a Cosmos blockchain such as `'juno'`. */
-    readonly cosmos?: Record<string, Nodes>;
+    readonly cosmos?: Record<string, RpcNodesAndLcdNodes>;
     readonly near?: Nodes;
   };
 
   /** Every blockchain's default URL list ({@link Cosmos.osmosis}, {@link near}, etc.). */
   export const urls: Blockchains = {
     cosmos: {
-      cosmosHub: Cosmos.cosmosHub,
-      osmosis: Cosmos.osmosis,
-      sei: Cosmos.sei,
-      mars: Cosmos.mars,
-      juno: Cosmos.juno,
-      akash: Cosmos.akash,
-      axelar: Cosmos.axelar,
-      eMoney: Cosmos.eMoney,
-      persistence: Cosmos.persistence,
-      stargaze: Cosmos.stargaze,
-      sifChain: Cosmos.sifchain,
-      sommelier: Cosmos.sommelier,
-      umee: Cosmos.umee,
-      assetMantle: Cosmos.assetMantle,
-      kujira: Cosmos.kujira,
-      injective: Cosmos.injective,
-      stride: Cosmos.stride,
-      cheqd: Cosmos.cheqd,
-      likeCoin: Cosmos.likeCoin,
-      chihuahua: Cosmos.chihuahua,
-      gravityBridge: Cosmos.gravityBridge,
-      irisNet: Cosmos.irisNet,
-      starname: Cosmos.starname,
-      fetch: Cosmos.fetch,
-      desmos: Cosmos.desmos,
-      teritori: Cosmos.teritori,
-      agoric: Cosmos.agoric,
-      secret: Cosmos.secret,
-      evmos: Cosmos.evmos,
-      canto: Cosmos.canto,
-      comdex: Cosmos.comdex,
-      bitSong: Cosmos.bitSong,
+      cosmosHub: { rpcNodes: [], lcdNodes: Cosmos.cosmosHub },
+      osmosis: { rpcNodes: [], lcdNodes: Cosmos.osmosis },
+      sei: { rpcNodes: [], lcdNodes: Cosmos.sei },
+      mars: { rpcNodes: [], lcdNodes: Cosmos.mars },
+      juno: { rpcNodes: [], lcdNodes: Cosmos.juno },
+      akash: { rpcNodes: [], lcdNodes: Cosmos.akash },
+      axelar: { rpcNodes: [], lcdNodes: Cosmos.axelar },
+      eMoney: { rpcNodes: [], lcdNodes: Cosmos.eMoney },
+      persistence: { rpcNodes: [], lcdNodes: Cosmos.persistence },
+      stargaze: { rpcNodes: [], lcdNodes: Cosmos.stargaze },
+      sifChain: { rpcNodes: [], lcdNodes: Cosmos.sifChain },
+      sommelier: { rpcNodes: [], lcdNodes: Cosmos.sommelier },
+      umee: { rpcNodes: [], lcdNodes: Cosmos.umee },
+      assetMantle: { rpcNodes: [], lcdNodes: Cosmos.assetMantle },
+      kujira: { rpcNodes: [], lcdNodes: Cosmos.kujira },
+      injective: { rpcNodes: [], lcdNodes: Cosmos.injective },
+      stride: { rpcNodes: [], lcdNodes: Cosmos.stride },
+      cheqd: { rpcNodes: [], lcdNodes: Cosmos.cheqd },
+      likeCoin: { rpcNodes: [], lcdNodes: Cosmos.likeCoin },
+      chihuahua: { rpcNodes: [], lcdNodes: Cosmos.chihuahua },
+      gravityBridge: { rpcNodes: [], lcdNodes: Cosmos.gravityBridge },
+      irisNet: { rpcNodes: [], lcdNodes: Cosmos.irisNet },
+      starname: { rpcNodes: [], lcdNodes: Cosmos.starname },
+      fetch: { rpcNodes: [], lcdNodes: Cosmos.fetch },
+      desmos: { rpcNodes: [], lcdNodes: Cosmos.desmos },
+      teritori: { rpcNodes: [], lcdNodes: Cosmos.teritori },
+      agoric: { rpcNodes: [], lcdNodes: Cosmos.agoric },
+      secret: { rpcNodes: [], lcdNodes: Cosmos.secret },
+      evmos: { rpcNodes: [], lcdNodes: Cosmos.evmos },
+      canto: { rpcNodes: [], lcdNodes: Cosmos.canto },
+      comdex: { rpcNodes: [], lcdNodes: Cosmos.comdex },
+      bitSong: { rpcNodes: [], lcdNodes: Cosmos.bitSong },
     },
     near,
   };

@@ -19,7 +19,7 @@ describe('Pinger', () => {
       it('must return <false> if the network request failed', async () => {
         setUpErrorTest();
         const pinger = Container.get(Pinger.token);
-        const actual = await pinger.ping({ isNear: true, url: 'url' });
+        const actual = await pinger.ping(Pinger.NodeType.Near, 'url');
         expect(actual).toBe(false);
       });
 
@@ -33,7 +33,7 @@ describe('Pinger', () => {
       it('must return <false> if the API returned an HTTP status code other than 200', async () => {
         setUpBadStatusTest();
         const pinger = Container.get(Pinger.token);
-        const actual = await pinger.ping({ isNear: true, url: 'url' });
+        const actual = await pinger.ping(Pinger.NodeType.Near, 'url');
         expect(actual).toBe(false);
       });
 
@@ -44,10 +44,10 @@ describe('Pinger', () => {
         Container.set(Pinger.token, new Pinger.DefaultApi());
       };
 
-      it('must return <false> if the API returned an HTTP status code of 200', async () => {
+      it('must return <true> if the API returned an HTTP status code of 200', async () => {
         setUpGoodStatusTest();
         const pinger = Container.get(Pinger.token);
-        const actual = await pinger.ping({ isNear: true, url: 'url' });
+        const actual = await pinger.ping(Pinger.NodeType.Near, 'url');
         expect(actual).toBe(true);
       });
     });

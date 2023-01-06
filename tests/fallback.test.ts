@@ -8,12 +8,24 @@ afterEach(() => Container.reset());
 describe('Fallback', () => {
   describe('DefaultApi', () => {
     describe('validateConfig', () => {
-      it("must throw an error if there's an empty URL list", () => {
+      it("must throw an error if there's an empty NEAR URL list", () => {
+        const fn = () => {
+          new Fallback.Falooda({
+            intervalInSecs: 3,
+            urls: { near: [] },
+          });
+        };
+        expect(fn).toThrowError(Fallback.ConfigError);
+      });
+
+      it("must throw an error if there's an empty Cosmos URL list", () => {
         const fn = () => {
           new Fallback.Falooda({
             intervalInSecs: 3,
             urls: {
-              cosmos: { blockchain: [] },
+              cosmos: {
+                blockchain: { rpcNodes: [], lcdNodes: [] },
+              },
             },
           });
         };
@@ -24,9 +36,7 @@ describe('Fallback', () => {
         const fn = () => {
           new Fallback.Falooda({
             intervalInSecs: 0,
-            urls: {
-              cosmos: { blockchain: ['url'] },
-            },
+            urls: { near: ['url'] },
           });
         };
         expect(fn).toThrowError(Fallback.ConfigError);
@@ -47,11 +57,18 @@ describe('Fallback', () => {
         const falooda = new Fallback.Falooda({
           intervalInSecs: 1,
           urls: {
-            cosmos: { juno: ['url1', 'url2'], osmosis: ['url1', 'url2'] },
+            cosmos: {
+              juno: { rpcNodes: ['rpc1', 'rpc2'], lcdNodes: ['lcd1', 'lcd2'] },
+              osmosis: { rpcNodes: ['rpc1', 'rpc2'], lcdNodes: ['lcd1', 'lcd2'] },
+            },
             near: ['url1', 'url2'],
           },
         });
-        for (const blockchain of ['juno', 'osmosis', 'near']) expect(falooda.urls[blockchain]).toBe('url1');
+        for (const blockchain of ['juno', 'osmosis']) {
+          expect(falooda.getCosmosLcdNodeUrl(blockchain)).toBe('lcd1');
+          expect(falooda.getCosmosRpcNodeUrl(blockchain)).toBe('rpc1');
+        }
+        expect(falooda.getNearNodeUrl()).toBe('url1');
         falooda.stop();
       });
     });
@@ -59,7 +76,7 @@ describe('Fallback', () => {
     describe('monitor', () => {
       const setUpRunningTest = () => {
         class MockPinger {
-          ping({ url }: Pinger.PingInput): boolean {
+          ping(_: Pinger.NodeType, url: string): boolean {
             return url === 'url2';
           }
         }
@@ -75,7 +92,7 @@ describe('Fallback', () => {
         });
         falooda.start();
         await sleep({ ms: 1 }); // Wait for the fallback system to run once.
-        expect(falooda.urls.near).toBe('url2');
+        expect(falooda.getNearNodeUrl()).toBe('url2');
         falooda.stop();
       });
 
@@ -122,7 +139,7 @@ describe('Fallback', () => {
         });
         falooda.start();
         await sleep({ ms: 1 }); // Wait for the fallback system to run once.
-        expect(spy).toHaveBeenCalledWith({ isNear: true, url });
+        expect(spy).toHaveBeenCalledWith(Pinger.NodeType.Near, 'url');
         falooda.stop();
       });
 
@@ -142,12 +159,14 @@ describe('Fallback', () => {
         const falooda = new Fallback.Falooda({
           intervalInSecs: 0.1,
           urls: {
-            cosmos: { juno: [url] },
+            cosmos: {
+              juno: { rpcNodes: [], lcdNodes: [url] },
+            },
           },
         });
         falooda.start();
         await sleep({ ms: 1 }); // Wait for the fallback system to run once.
-        expect(spy).toHaveBeenCalledWith({ isNear: false, url });
+        expect(spy).toHaveBeenCalledWith(Pinger.NodeType.CosmosLcd, 'url');
         falooda.stop();
       });
     });
