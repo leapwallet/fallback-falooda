@@ -2,20 +2,19 @@ import { Container, Token } from 'typedi';
 import fetchToken from './fetch-token';
 
 namespace Pinger {
-  export type PingInput = {
-    /** `true` if the {@link url} is a NEAR node, and `false` if it's for a Cosmos blockchain node. */
-    readonly isNear: boolean;
-    /** Blockchain node's URL. */
-    readonly url: string;
-  };
+  export enum NodeType {
+    Near,
+    CosmosRpc,
+    CosmosLcd,
+  }
 
   export class DefaultApi {
     /** @returns Whether the API {@link url} is working as expected. */
-    async ping({ isNear, url }: PingInput): Promise<boolean> {
+    async ping(type: NodeType, url: string): Promise<boolean> {
       let response: Response;
       const fetch = Container.get(fetchToken);
       try {
-        response = await fetch(`${url}/${isNear ? 'status' : 'node_info'}`);
+        response = await fetch(`${url}/${type === NodeType.CosmosLcd ? 'node_info' : 'status'}`);
       } catch (err) {
         return false;
       }
