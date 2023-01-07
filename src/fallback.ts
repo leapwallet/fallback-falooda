@@ -1,4 +1,4 @@
-import DefaultUrls from './default-urls';
+import Urls from './urls';
 import { Container } from 'typedi';
 import Pinger from './pinger';
 import sleep from './sleep';
@@ -7,17 +7,12 @@ import BlockchainType = Pinger.NodeType;
 namespace Fallback {
   export type Config = {
     /** Each URL list must have at least one element. */
-    readonly urls: DefaultUrls.Blockchains;
+    readonly urls: Urls.Blockchains;
     /** The fallback system kicks in at this interval. Must be at least `1`. */
     readonly intervalInSecs: number;
   };
 
-  /**
-   * The {@link Config} was invalid because of at least one of the following reasons:
-   * - One of the Cosmos blockchain entries in {@link Config.urls} had a total of zero RPC and LCD URLs supplied.
-   * - The NEAR URL list defined in {@link Config.urls} but it was empty.
-   * - The {@link Config.intervalInSecs} wasn't greater than `0`.
-   */
+  /** The {@link Config} was invalid because the {@link Config.intervalInSecs} wasn't greater than `0`. */
   export class ConfigError extends Error {}
 
   /**
@@ -26,10 +21,10 @@ namespace Fallback {
    * new Falooda({
    *   intervalInSecs: 3,
    *   urls: {
-   *     ...DefaultUrls.urls,
+   *     ...Urls.defaults,
    *     cosmos: {
-   *       ...DefaultUrls.urls.cosmos,
-   *       osmosis: { rpcNodes: [], lcdNodes: ['osmosis.example.com', ...DefaultUrls.urls.cosmos.osmosis] },
+   *       ...Urls.defaults.cosmos,
+   *       osmosis: { rpcNodes: [], lcdNodes: ['osmosis.example.com', ...Urls.defaults.cosmos.osmosis] },
    *       newChain: { rpcNodes: [], lcdNodes: ['newChain-1.example.com', 'newChain-2.example.com'] },
    *     },
    *   },
@@ -53,18 +48,9 @@ namespace Fallback {
     private isRunning = false;
 
     /** @throws {@link ConfigError} */
-    constructor(private readonly config: Config = { urls: DefaultUrls.urls, intervalInSecs: 3 }) {
-      Falooda.validateConfig(config);
+    constructor(private readonly config: Config = { urls: Urls.defaults, intervalInSecs: 3 }) {
+      if (config.intervalInSecs <= 0) throw new ConfigError();
       this.assignUrls(config);
-    }
-
-    /** @throws {@link ConfigError} */
-    private static validateConfig(config: Config): void {
-      const isCosmosValid =
-        Object.values(config.urls.cosmos ?? {}).find(
-          ({ rpcNodes, lcdNodes }) => rpcNodes.concat(lcdNodes).length === 0,
-        ) === undefined;
-      if (!isCosmosValid || config.urls.near?.length === 0 || config.intervalInSecs <= 0) throw new ConfigError();
     }
 
     /**
@@ -94,7 +80,7 @@ namespace Fallback {
         if (rpcNodes.length > 0) this.cosmosRpcNodes[blockchain] = rpcNodes[0]!;
         if (lcdNodes.length > 0) this.cosmosLcdNodes[blockchain] = lcdNodes[0]!;
       }
-      if (config.urls.near !== undefined) this.nearUrl = config.urls.near[0]!;
+      if (config.urls.near !== undefined && config.urls.near.length > 0) this.nearUrl = config.urls.near[0]!;
     }
 
     /** The fallback system will start/resume running if it wasn't already. */
@@ -125,7 +111,7 @@ namespace Fallback {
      */
     private async monitor(type: Pinger.NodeType, blockchain: string): Promise<void> {
       while (true) {
-        let urls: DefaultUrls.Nodes;
+        let urls: Urls.Nodes;
         switch (type) {
           case Pinger.NodeType.Near:
             urls = this.config.urls.near!;

@@ -8,30 +8,6 @@ afterEach(() => Container.reset());
 describe('Fallback', () => {
   describe('DefaultApi', () => {
     describe('validateConfig', () => {
-      it("must throw an error if there's an empty NEAR URL list", () => {
-        const fn = () => {
-          new Fallback.Falooda({
-            intervalInSecs: 3,
-            urls: { near: [] },
-          });
-        };
-        expect(fn).toThrowError(Fallback.ConfigError);
-      });
-
-      it("must throw an error if there's an empty Cosmos URL list", () => {
-        const fn = () => {
-          new Fallback.Falooda({
-            intervalInSecs: 3,
-            urls: {
-              cosmos: {
-                blockchain: { rpcNodes: [], lcdNodes: [] },
-              },
-            },
-          });
-        };
-        expect(fn).toThrowError(Fallback.ConfigError);
-      });
-
       it("must throw an error if the interval isn't positive", () => {
         const fn = () => {
           new Fallback.Falooda({

@@ -48,6 +48,7 @@
   ],
   "browser": "dist/browser/src/index.js",
   "dependencies": {
+    "chain-registry": "1.6.0",
     "cross-fetch": "3.1.5",
     "typedi": "0.10.0"
   },

@@ -4,14 +4,15 @@
  * const falooda = new Fallback.Falooda({
  *   intervalInSecs: 3,
  *   urls: {
- *     ...DefaultUrls.urls,
+ *     ...Urls.defaults,
  *     cosmos: {
- *       ...DefaultUrls.urls.cosmos,
- *       osmosis: { rpcNodes: [], lcdNodes: ['osmosis.example.com', ...DefaultUrls.urls.cosmos.osmosis] },
+ *       ...Urls.defaults.cosmos,
+ *       osmosis: { rpcNodes: [], lcdNodes: ['osmosis.example.com', ...Urls.defaults.cosmos.osmosis] },
  *       newChain: { rpcNodes: [], lcdNodes: ['newChain-1.example.com', 'newChain-2.example.com'] },
  *     },
  *   },
  * });
+ * falooda.start();
  * const osmosisLcd = falooda.getCosmosLcdNodeUrl('osmosis')!
  * ```
  *
@@ -26,5 +27,5 @@ import Pinger from './pinger';
 Container.set(fetchToken, fetch);
 Container.set(Pinger.token, new Pinger.DefaultApi());
 
-export { default as DefaultUrls } from './default-urls';
+export { default as DefaultUrls } from './urls';
 export { default as Fallback } from './fallback';
