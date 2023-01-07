@@ -1,6 +1,6 @@
 {
   "name": "@leapwallet/fallback-falooda",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "JavaScript library that implements a blockchain node fallback system",
   "scripts": {
     "test": "jest",
