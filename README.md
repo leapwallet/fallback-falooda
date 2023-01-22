@@ -30,7 +30,6 @@ Here's how it works. When you write a program that uses a blockchain node such a
 
 - Here's the latest version's [documentation](https://leapwallet.github.io/fallback-falooda/). To view a previous version's documentation, find the relevant [release](https://github.com/leapwallet/fallback-falooda/releases), download **docs.zip** from **Assets**, unzip it, and open `docs/index.html` in your browser.
 - [Changelog](CHANGELOG.md)
-- If you're using this
 - Never import APIs from nested files.
 
   For example, this is correct:
