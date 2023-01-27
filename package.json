@@ -28,7 +28,7 @@
     ]
   },
   "types": "dist/browser/src/index.d.ts",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": "leapwallet/fallback-falooda",
   "keywords": [
     "blockchain node fallback system cosmos near"
