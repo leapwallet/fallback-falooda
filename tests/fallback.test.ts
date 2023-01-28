@@ -55,7 +55,7 @@ describe('Fallback', () => {
         const falooda = new Fallback.Falooda({
           urls: { near: ['1', '2', '3', '4', '5'] },
         });
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(falooda.getFastestNearUrl()).toBe('3');
       });
 
@@ -89,7 +89,7 @@ describe('Fallback', () => {
         const falooda = new Fallback.Falooda({
           urls: { near: [] },
         });
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(falooda.getFastestNearUrl()).toBeUndefined();
       });
     });
@@ -123,7 +123,7 @@ describe('Fallback', () => {
         const falooda = new Fallback.Falooda({
           urls: { near: ['1', '2', '3', '4', '5'] },
         });
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         const fastest = falooda.getRandomNearUrl()!;
         expect(['1', '3', '4'].includes(fastest)).toBe(true);
       });
@@ -158,7 +158,7 @@ describe('Fallback', () => {
         const falooda = new Fallback.Falooda({
           urls: { near: [] },
         });
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(falooda.getRandomNearUrl()).toBeUndefined();
       });
     });
@@ -299,7 +299,7 @@ describe('Fallback', () => {
           urls: { near: ['1', '2'] },
         });
         falooda.start();
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(falooda.getFastestNearUrl()).toBe('2');
         falooda.stop();
       });
@@ -322,9 +322,9 @@ describe('Fallback', () => {
           intervalInSecs: 0.1,
           urls: { near: ['url'] },
         });
-        await sleep({ ms: 101 }); // Wait for the fallback system to run twice.
+        await sleep({ ms: 110 }); // Wait for the fallback system to run twice.
         falooda.stop();
-        await sleep({ ms: 201 }); // Wait for the fallback system to run two more times.
+        await sleep({ ms: 210 }); // Wait for the fallback system to run two more times.
         expect(spy).toHaveBeenCalledTimes(2);
         falooda.stop();
       });
@@ -348,7 +348,7 @@ describe('Fallback', () => {
           urls: { near: [url] },
         });
         falooda.start();
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(spy).toHaveBeenCalledWith(Pinger.NodeType.Near, 'url');
         falooda.stop();
       });
@@ -376,7 +376,7 @@ describe('Fallback', () => {
           },
         });
         falooda.start();
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(spy).toHaveBeenCalledWith(Pinger.NodeType.CosmosLcd, 'url');
         falooda.stop();
       });
