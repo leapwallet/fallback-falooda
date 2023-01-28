@@ -20,9 +20,10 @@ describe('Fallback', () => {
 
       it("must not throw an error if the interval isn't defined", () => {
         Container.set(Pinger.token, new Pinger.DefaultApi());
-        new Fallback.Falooda({
+        const falooda = new Fallback.Falooda({
           urls: { near: ['url'] },
         });
+        falooda.stop();
       });
     });
 
@@ -57,6 +58,7 @@ describe('Fallback', () => {
         });
         await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(falooda.getFastestNearUrl()).toBe('3');
+        falooda.stop();
       });
 
       const setUpUnhealthyTest = () => {
@@ -75,6 +77,7 @@ describe('Fallback', () => {
           urls: { near: ['1', '2', '3'] },
         });
         expect(falooda.getFastestNearUrl()).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined> if the input was <undefined>', () => {
@@ -82,6 +85,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getFastestNearUrl()).toBeUndefined();
+        falooda.stop();
       });
 
       it('must return <undefined> if the input was empty', async () => {
@@ -91,6 +95,7 @@ describe('Fallback', () => {
         });
         await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(falooda.getFastestNearUrl()).toBeUndefined();
+        falooda.stop();
       });
     });
 
@@ -126,6 +131,7 @@ describe('Fallback', () => {
         await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         const fastest = falooda.getRandomNearUrl()!;
         expect(['1', '3', '4'].includes(fastest)).toBe(true);
+        falooda.stop();
       });
 
       const setUpUnhealthyTest = () => {
@@ -144,6 +150,7 @@ describe('Fallback', () => {
           urls: { near: ['1', '2', '3'] },
         });
         expect(falooda.getRandomNearUrl()).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined> if the input was <undefined>', () => {
@@ -151,6 +158,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getRandomNearUrl()).toBeUndefined();
+        falooda.stop();
       });
 
       it('must return <undefined> if the input was empty', async () => {
@@ -160,6 +168,7 @@ describe('Fallback', () => {
         });
         await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(falooda.getRandomNearUrl()).toBeUndefined();
+        falooda.stop();
       });
     });
 
@@ -174,6 +183,7 @@ describe('Fallback', () => {
           },
         });
         expect(falooda.getFastestCosmosRpc('agoric')).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined>', () => {
@@ -181,6 +191,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getFastestCosmosRpc('agoric')).toBeUndefined();
+        falooda.stop();
       });
     });
 
@@ -194,6 +205,7 @@ describe('Fallback', () => {
           },
         });
         expect(falooda.getRandomCosmosRpc('agoric')).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined>', () => {
@@ -201,6 +213,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getRandomCosmosRpc('agoric')).toBeUndefined();
+        falooda.stop();
       });
     });
 
@@ -215,6 +228,7 @@ describe('Fallback', () => {
           },
         });
         expect(falooda.getFastestCosmosLcd('agoric')).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined>', () => {
@@ -222,6 +236,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getFastestCosmosLcd('agoric')).toBeUndefined();
+        falooda.stop();
       });
     });
 
@@ -236,6 +251,7 @@ describe('Fallback', () => {
           },
         });
         expect(falooda.getRandomCosmosLcd('agoric')).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined>', () => {
@@ -243,6 +259,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getRandomCosmosLcd('agoric')).toBeUndefined();
+        falooda.stop();
       });
     });
 
@@ -253,6 +270,7 @@ describe('Fallback', () => {
           urls: { near: ['1'] },
         });
         expect(falooda.getFastestNearUrl()).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined>', () => {
@@ -260,6 +278,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getFastestNearUrl()).toBeUndefined();
+        falooda.stop();
       });
     });
 
@@ -272,6 +291,7 @@ describe('Fallback', () => {
           },
         });
         expect(falooda.getRandomNearUrl()).toBe('1');
+        falooda.stop();
       });
 
       it('must return <undefined>', () => {
@@ -279,6 +299,7 @@ describe('Fallback', () => {
           urls: {},
         });
         expect(falooda.getRandomNearUrl()).toBeUndefined();
+        falooda.stop();
       });
     });
 
