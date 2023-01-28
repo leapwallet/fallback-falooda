@@ -9,8 +9,8 @@ namespace Urls {
   ];
 
   export type RpcNodesAndLcdNodes = {
-    readonly rpcNodes: Nodes;
-    readonly lcdNodes: Nodes;
+    readonly rpcNodes?: Nodes;
+    readonly lcdNodes?: Nodes;
   };
 
   /** A list of blockchain node URLs for a particular blockchain. */
