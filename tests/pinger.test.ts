@@ -20,7 +20,7 @@ describe('Pinger', () => {
         setUpErrorTest();
         const pinger = Container.get(Pinger.token);
         const actual = await pinger.ping(Pinger.NodeType.Near, 'url');
-        expect(actual).toBe(false);
+        expect(actual.isHealthy).toBe(false);
       });
 
       const setUpBadStatusTest = () => {
@@ -34,7 +34,7 @@ describe('Pinger', () => {
         setUpBadStatusTest();
         const pinger = Container.get(Pinger.token);
         const actual = await pinger.ping(Pinger.NodeType.Near, 'url');
-        expect(actual).toBe(false);
+        expect(actual.isHealthy).toBe(false);
       });
 
       const setUpGoodStatusTest = () => {
@@ -48,7 +48,7 @@ describe('Pinger', () => {
         setUpGoodStatusTest();
         const pinger = Container.get(Pinger.token);
         const actual = await pinger.ping(Pinger.NodeType.Near, 'url');
-        expect(actual).toBe(true);
+        expect(actual.isHealthy).toBe(true);
       });
     });
   });

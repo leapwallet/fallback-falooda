@@ -7,7 +7,7 @@ afterEach(() => Container.reset());
 
 describe('Fallback', () => {
   describe('DefaultApi', () => {
-    describe('validateConfig', () => {
+    describe('constructor', () => {
       it("must throw an error if the interval isn't positive", () => {
         const fn = () => {
           new Fallback.Falooda({
@@ -17,34 +17,288 @@ describe('Fallback', () => {
         };
         expect(fn).toThrowError(Fallback.ConfigError);
       });
+
+      it("must not throw an error if the interval isn't defined", () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
+          urls: { near: ['url'] },
+        });
+        falooda.stop();
+      });
     });
 
-    describe('assignUrls', () => {
-      const setUpUrlsTest = () => {
+    describe('getFastestUrl', () => {
+      const setUpFastestTest = () => {
         class MockPinger {
-          ping() {}
+          ping(_: Pinger.NodeType, url: string): Pinger.ResponseInfo {
+            switch (url) {
+              case '1':
+                return { isHealthy: true, resTimeInMs: 100 };
+              case '2':
+                return { isHealthy: false, resTimeInMs: 200 };
+              case '3':
+                return { isHealthy: true, resTimeInMs: 50 };
+              case '4':
+                return { isHealthy: true, resTimeInMs: 400 };
+              case '5':
+                return { isHealthy: false, resTimeInMs: 25 };
+              default:
+                throw new Error('This test case needs to be updated.');
+            }
+          }
         }
 
         Container.set(Pinger.token, new MockPinger());
       };
 
-      it('must initialize the URLs', () => {
-        setUpUrlsTest();
+      it('must return the fastest URL', async () => {
+        setUpFastestTest();
         const falooda = new Fallback.Falooda({
-          intervalInSecs: 1,
+          urls: { near: ['1', '2', '3', '4', '5'] },
+        });
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
+        expect(falooda.getFastestNearUrl()).toBe('3');
+        falooda.stop();
+      });
+
+      const setUpUnhealthyTest = () => {
+        class MockPinger {
+          ping(): Pinger.ResponseInfo {
+            return { isHealthy: false, resTimeInMs: 100 };
+          }
+        }
+
+        Container.set(Pinger.token, new MockPinger());
+      };
+
+      it('must return an unhealthy URL if every URL is unhealthy', () => {
+        setUpUnhealthyTest();
+        const falooda = new Fallback.Falooda({
+          urls: { near: ['1', '2', '3'] },
+        });
+        expect(falooda.getFastestNearUrl()).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined> if the input was <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getFastestNearUrl()).toBeUndefined();
+        falooda.stop();
+      });
+
+      it('must return <undefined> if the input was empty', async () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
+          urls: { near: [] },
+        });
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
+        expect(falooda.getFastestNearUrl()).toBeUndefined();
+        falooda.stop();
+      });
+    });
+
+    describe('getRandomUrl', () => {
+      const setUpRandomTest = () => {
+        class MockPinger {
+          ping(_: Pinger.NodeType, url: string): Pinger.ResponseInfo {
+            switch (url) {
+              case '1':
+                return { isHealthy: true, resTimeInMs: 100 };
+              case '2':
+                return { isHealthy: false, resTimeInMs: 200 };
+              case '3':
+                return { isHealthy: true, resTimeInMs: 50 };
+              case '4':
+                return { isHealthy: true, resTimeInMs: 400 };
+              case '5':
+                return { isHealthy: false, resTimeInMs: 25 };
+              default:
+                throw new Error('This test case needs to be updated.');
+            }
+          }
+        }
+
+        Container.set(Pinger.token, new MockPinger());
+      };
+
+      it('must return a random URL', async () => {
+        setUpRandomTest();
+        const falooda = new Fallback.Falooda({
+          urls: { near: ['1', '2', '3', '4', '5'] },
+        });
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
+        const fastest = falooda.getRandomNearUrl()!;
+        expect(['1', '3', '4'].includes(fastest)).toBe(true);
+        falooda.stop();
+      });
+
+      const setUpUnhealthyTest = () => {
+        class MockPinger {
+          ping(): Pinger.ResponseInfo {
+            return { isHealthy: false, resTimeInMs: 100 };
+          }
+        }
+
+        Container.set(Pinger.token, new MockPinger());
+      };
+
+      it('must return an unhealthy URL if every URL is unhealthy', () => {
+        setUpUnhealthyTest();
+        const falooda = new Fallback.Falooda({
+          urls: { near: ['1', '2', '3'] },
+        });
+        expect(falooda.getRandomNearUrl()).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined> if the input was <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getRandomNearUrl()).toBeUndefined();
+        falooda.stop();
+      });
+
+      it('must return <undefined> if the input was empty', async () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
+          urls: { near: [] },
+        });
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
+        expect(falooda.getRandomNearUrl()).toBeUndefined();
+        falooda.stop();
+      });
+    });
+
+    describe('getFastestCosmosRpc', () => {
+      it('must return a URL', () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
           urls: {
             cosmos: {
-              juno: { rpcNodes: ['rpc1', 'rpc2'], lcdNodes: ['lcd1', 'lcd2'] },
-              osmosis: { rpcNodes: ['rpc1', 'rpc2'], lcdNodes: ['lcd1', 'lcd2'] },
+              agoric: { rpcNodes: ['1'] },
             },
-            near: ['url1', 'url2'],
           },
         });
-        for (const blockchain of ['juno', 'osmosis']) {
-          expect(falooda.getCosmosLcdNodeUrl(blockchain)).toBe('lcd1');
-          expect(falooda.getCosmosRpcNodeUrl(blockchain)).toBe('rpc1');
-        }
-        expect(falooda.getNearNodeUrl()).toBe('url1');
+        expect(falooda.getFastestCosmosRpc('agoric')).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getFastestCosmosRpc('agoric')).toBeUndefined();
+        falooda.stop();
+      });
+    });
+
+    describe('getRandomCosmosRpc', () => {
+      it('must return a URL', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {
+            cosmos: {
+              agoric: { rpcNodes: ['1'] },
+            },
+          },
+        });
+        expect(falooda.getRandomCosmosRpc('agoric')).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getRandomCosmosRpc('agoric')).toBeUndefined();
+        falooda.stop();
+      });
+    });
+
+    describe('getFastestCosmosLcd', () => {
+      it('must return a URL', () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
+          urls: {
+            cosmos: {
+              agoric: { lcdNodes: ['1'] },
+            },
+          },
+        });
+        expect(falooda.getFastestCosmosLcd('agoric')).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getFastestCosmosLcd('agoric')).toBeUndefined();
+        falooda.stop();
+      });
+    });
+
+    describe('getRandomCosmosLcd', () => {
+      it('must return a URL', () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
+          urls: {
+            cosmos: {
+              agoric: { lcdNodes: ['1'] },
+            },
+          },
+        });
+        expect(falooda.getRandomCosmosLcd('agoric')).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getRandomCosmosLcd('agoric')).toBeUndefined();
+        falooda.stop();
+      });
+    });
+
+    describe('getFastestNearUrl', () => {
+      it('must return a URL', () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
+          urls: { near: ['1'] },
+        });
+        expect(falooda.getFastestNearUrl()).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getFastestNearUrl()).toBeUndefined();
+        falooda.stop();
+      });
+    });
+
+    describe('getRandomNearUrl', () => {
+      it('must return a URL', () => {
+        Container.set(Pinger.token, new Pinger.DefaultApi());
+        const falooda = new Fallback.Falooda({
+          urls: {
+            near: ['1'],
+          },
+        });
+        expect(falooda.getRandomNearUrl()).toBe('1');
+        falooda.stop();
+      });
+
+      it('must return <undefined>', () => {
+        const falooda = new Fallback.Falooda({
+          urls: {},
+        });
+        expect(falooda.getRandomNearUrl()).toBeUndefined();
         falooda.stop();
       });
     });
@@ -52,8 +306,8 @@ describe('Fallback', () => {
     describe('monitor', () => {
       const setUpRunningTest = () => {
         class MockPinger {
-          ping(_: Pinger.NodeType, url: string): boolean {
-            return url === 'url2';
+          ping(_: Pinger.NodeType, url: string): Pinger.ResponseInfo {
+            return url === '1' ? { isHealthy: false, resTimeInMs: 100 } : { isHealthy: true, resTimeInMs: 100 };
           }
         }
 
@@ -63,18 +317,19 @@ describe('Fallback', () => {
       it('must overwrite the URL if the fallback system is running', async () => {
         setUpRunningTest();
         const falooda = new Fallback.Falooda({
-          intervalInSecs: 0.1,
-          urls: { near: ['url1', 'url2'] },
+          urls: { near: ['1', '2'] },
         });
         falooda.start();
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
-        expect(falooda.getNearNodeUrl()).toBe('url2');
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
+        expect(falooda.getFastestNearUrl()).toBe('2');
         falooda.stop();
       });
 
       const setUpNotRunningTest = () => {
         class MockPinger {
-          ping() {}
+          ping(): Pinger.ResponseInfo {
+            return { isHealthy: false, resTimeInMs: 100 };
+          }
         }
 
         Container.set(Pinger.token, new MockPinger());
@@ -88,17 +343,18 @@ describe('Fallback', () => {
           intervalInSecs: 0.1,
           urls: { near: ['url'] },
         });
-        falooda.start();
-        await sleep({ ms: 101 }); // Wait for the fallback system to run twice.
+        await sleep({ ms: 110 }); // Wait for the fallback system to run twice.
         falooda.stop();
-        await sleep({ ms: 201 }); // Wait for the fallback system to run two more times.
+        await sleep({ ms: 210 }); // Wait for the fallback system to run two more times.
         expect(spy).toHaveBeenCalledTimes(2);
         falooda.stop();
       });
 
       const setUpNearTest = () => {
         class MockPinger {
-          ping() {}
+          ping(): Pinger.ResponseInfo {
+            return { isHealthy: false, resTimeInMs: 100 };
+          }
         }
 
         Container.set(Pinger.token, new MockPinger());
@@ -110,18 +366,19 @@ describe('Fallback', () => {
         const spy = jest.spyOn(pinger, 'ping');
         const url = 'url';
         const falooda = new Fallback.Falooda({
-          intervalInSecs: 0.1,
           urls: { near: [url] },
         });
         falooda.start();
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(spy).toHaveBeenCalledWith(Pinger.NodeType.Near, 'url');
         falooda.stop();
       });
 
       const setUpNotNearTest = () => {
         class MockPinger {
-          ping() {}
+          ping(): Pinger.ResponseInfo {
+            return { isHealthy: false, resTimeInMs: 100 };
+          }
         }
 
         Container.set(Pinger.token, new MockPinger());
@@ -133,7 +390,6 @@ describe('Fallback', () => {
         const spy = jest.spyOn(pinger, 'ping');
         const url = 'url';
         const falooda = new Fallback.Falooda({
-          intervalInSecs: 0.1,
           urls: {
             cosmos: {
               juno: { rpcNodes: [], lcdNodes: [url] },
@@ -141,7 +397,7 @@ describe('Fallback', () => {
           },
         });
         falooda.start();
-        await sleep({ ms: 1 }); // Wait for the fallback system to run once.
+        await sleep({ ms: 10 }); // Wait for the fallback system to run once.
         expect(spy).toHaveBeenCalledWith(Pinger.NodeType.CosmosLcd, 'url');
         falooda.stop();
       });
