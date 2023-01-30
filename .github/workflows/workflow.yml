@@ -51,10 +51,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16
-      - uses: JS-DevTools/npm-publish@v1
+      - uses: borales/actions-yarn@v4
         with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: public
+          cmd: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   github-release:
     if: github.ref == 'refs/heads/main'
     needs: host-docs
