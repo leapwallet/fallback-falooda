@@ -1,6 +1,6 @@
 {
   "name": "@leapwallet/fallback-falooda",
-  "version": "0.4.0",
+  "version": "0.1.0",
   "description": "JavaScript library that implements a blockchain node fallback system",
   "scripts": {
     "test": "jest",
@@ -33,9 +33,6 @@
   "keywords": [
     "blockchain node fallback system cosmos near"
   ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "engines": {
     "node": "16"
   },

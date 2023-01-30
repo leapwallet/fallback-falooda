@@ -314,7 +314,7 @@ describe('Fallback', () => {
         Container.set(Pinger.token, new MockPinger());
       };
 
-      it('must overwrite the URL if the fallback system is running', async () => {
+      it('must overwrite the URLs if the fallback system is running', async () => {
         setUpRunningTest();
         const falooda = new Fallback.Falooda({
           urls: { near: ['1', '2'] },

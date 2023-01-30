@@ -16,7 +16,6 @@ namespace Pinger {
   };
 
   export class DefaultApi {
-    // TODO: Update tests.
     async ping(type: NodeType, url: string): Promise<ResponseInfo> {
       let response: Response;
       const fetch = Container.get(fetchToken);

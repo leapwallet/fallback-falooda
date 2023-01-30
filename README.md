@@ -17,7 +17,7 @@ Here's how it works. When you write a program that uses a blockchain node such a
 
    Let's consider an example. You told the library to monitor the blockchains NEAR and Cosmos Hub every 10s. For NEAR, you supplied the URLS `N1`, `N2`, and `N3`. For Cosmos Hub, you specified the URLS `C1` and `C2`. As soon as the library is told to start, it'll assign the first URL passed for each blockchain (`N1` for NEAR, and `C1` for Cosmos Hub) as the "healthy" URL regardless of whether they're actually healthy. It'll then immediately check the health of URLs for NEAR and Cosmos Hub. For NEAR, it'll check `N1`, see that it's down, check `N2`, see that it's up, reassign NEAR's "healthy" URL to `N2`, wait ten seconds, and repeat this process until told to stop. For Cosmos Hub, it'll check `C1`, see that it's down, check `C2`, see that it's down, not reassign the "healthy" URL since there aren't any (`C1` will continue to be used as the "healthy" URL), wait ten seconds, and repeat this process until told to stop.
 
-4. Whenever you need to use a blockchain's node, access its URL via the variable exposed by this library.
+4. Whenever you need to use a blockchain's node, access its URL via this library's API. You can get the fastest node, a random node, or access the dataset to pick which healthy node you want (or let your users pick)!
 
 ## Installation
 
