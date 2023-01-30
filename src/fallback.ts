@@ -154,26 +154,25 @@ namespace Fallback {
     }
 
     /**
-     * Pings each URL listed for each blockchain in the {@link config} until a successful response is received. The
-     * first responsive URL is used to overwrite the {@link dataset}'s entry for that blockchain. This procedure will
-     * repeat while {@link isRunning}.
+     * Pings each URL listed for each blockchain in the {@link config}. The healthy nodes are used to overwrite the
+     * {@link dataset}'s entry for that blockchain. This procedure will repeat while {@link isRunning}.
      *
      * @param blockchain - The name of the blockchain; to be retrieved from the {@link config}. Unused if
      * {@link Pinger.NodeType} is {@link Pinger.NodeType.Near} (any value will work).
+     */
+    /*
+    We sequentially ping the nodes rather than using <Promise.allSettled()> because otherwise the performance would be
+    abysmal. If there are 50 Cosmos blockchains being monitored which each have 10 nodes, and the fallback system is
+    configured to run every few seconds, then over a hundred HTTP requests would be getting made per second.
      */
     private async monitor(type: Pinger.NodeType, blockchain: string): Promise<void> {
       while (this.isRunning) {
         const configUrls = this.getConfigUrls(type, blockchain);
         const healthyUrls = Array<BlockchainResponse>();
         const pinger = Container.get(Pinger.token);
-        const promises = Array<Promise<Pinger.ResponseInfo>>();
-        for (const url of configUrls) promises.push(pinger.ping(type, url));
-        const awaited = await Promise.allSettled(promises);
-        for (let index = 0; index < awaited.length; ++index) {
-          const resInfo = awaited[index]!;
-          if (resInfo.status === 'rejected') continue;
-          const { isHealthy, resTimeInMs } = resInfo.value;
-          if (isHealthy) healthyUrls.push({ url: configUrls[index]!, resTimeInMs });
+        for (const url of configUrls) {
+          const { isHealthy, resTimeInMs } = await pinger.ping(type, url);
+          if (isHealthy) healthyUrls.push({ url, resTimeInMs });
         }
         switch (type) {
           case Pinger.NodeType.Near:
