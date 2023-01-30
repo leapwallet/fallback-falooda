@@ -21,10 +21,16 @@ Here's how it works. When you write a program that uses a blockchain node such a
 
 ## Installation
 
-1. Since this package is privately published, you'll need to authenticate to the registry. Create a [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with the `repo` and `read:packages` scopes.
-2. Create a file named `.npmrc` (this must not be committed to your VCS but these steps must be followed by anyone using your project so that they can download this dependency) with the contents `//npm.pkg.github.com/:_authToken=<TOKEN>`, where `<TOKEN>` is your personal access token.
-3. Log in to the registry using the token you just generated as the password: `yarn login --registry https://npm.pkg.github.com --scope @leapwallet`.
-4. Now, you can install the package as you normally would have: `yarn add @leapwallet/fallback-falooda`
+Use one of the following methods:
+
+- npm:
+  ```shell
+  npm i @leapwallet/fallback-falooda
+  ```
+- Yarn:
+  ```shell
+  yarn add @leapwallet/fallback-falooda
+  ```
 
 ## Usage
 
