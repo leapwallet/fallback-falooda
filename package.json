@@ -33,9 +33,6 @@
   "keywords": [
     "blockchain node fallback system cosmos near"
   ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "engines": {
     "node": "16"
   },
