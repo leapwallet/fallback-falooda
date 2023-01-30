@@ -42,8 +42,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-lib:
-#    if: github.ref == 'refs/heads/main'
-#    needs: lint
+    if: github.ref == 'refs/heads/main'
+    needs: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
